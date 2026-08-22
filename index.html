@@ -2,193 +2,490 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Os Heróis - Pedidos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Os Heróis - App de Pedidos</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 15px; max-width: 500px; margin: auto; background-color: #f8f9fa; }
-        h1 { text-align: center; color: #dc3545; text-transform: uppercase; margin-bottom: 5px; }
-        h2 { color: #343a40; border-bottom: 2px solid #dc3545; padding-bottom: 5px; margin-top: 25px; }
-        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #ccc; }
-        .item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .item-info { flex: 1; }
-        .item-nome { font-weight: bold; font-size: 16px; color: #212529; display: block; }
-        .item-preco { color: #28a745; font-weight: bold; }
-        .item-controls { display: flex; align-items: center; gap: 10px; }
-        input[type="number"] { width: 45px; padding: 5px; text-align: center; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px; }
-        button.add-btn { background-color: #ffc107; color: #000; border: none; padding: 8px 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        button.add-btn:active { background-color: #e0a800; }
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --accent-orange: #d95d39;
+            --accent-blue: #1b65d4;
+            --border-color: #2c2c2c;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            padding-bottom: 220px; /* Espaço para o rodapé fixo */
+        }
+
+        /* Cabeçalho */
+        header {
+            text-align: center;
+            padding: 20px 0;
+            background: linear-gradient(180deg, #000000 0%, var(--bg-color) 100%);
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-orange);
+            box-shadow: 0 0 15px rgba(217, 93, 57, 0.4);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin: 20px 0 15px 0;
+        }
+
+        /* Lista de Produtos */
+        .menu-container {
+            padding: 0 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .item-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .item-icon {
+            font-size: 30px;
+            margin-right: 15px;
+            width: 40px;
+            text-align: center;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .item-price {
+            color: var(--accent-orange);
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .item-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            background: #2a2a2a;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
         
-        .resumo { background: #343a40; color: white; padding: 15px; border-radius: 8px; margin-top: 20px; }
-        .resumo h3 { margin-top: 0; border-bottom: 1px solid #495057; padding-bottom: 10px; }
-        #lista-pedido { list-style-type: none; padding: 0; margin: 0 0 15px 0; }
-        #lista-pedido li { padding: 5px 0; border-bottom: 1px dashed #495057; display: flex; justify-content: space-between;}
-        .total-box { font-size: 20px; font-weight: bold; text-align: right; color: #28a745; }
-        
-        .botoes-acao { display: flex; gap: 10px; margin-top: 15px; }
-        .print-btn { background-color: #0d6efd; color: white; border: none; padding: 15px; border-radius: 5px; flex: 2; font-size: 18px; font-weight: bold; cursor: pointer; }
-        .clear-btn { background-color: #dc3545; color: white; border: none; padding: 15px; border-radius: 5px; flex: 1; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .qty-btn:active { background: #3a3a3a; }
+
+        .qty-input {
+            width: 30px;
+            text-align: center;
+            background: none;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            pointer-events: none; /* Impede digitar manualmente */
+        }
+
+        .add-btn {
+            background-color: transparent;
+            color: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .add-btn:active {
+            background-color: var(--accent-blue);
+            color: white;
+        }
+
+        /* Rodapé Fixo (Carrinho) */
+        .cart-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1a1a1c;
+            border-top: 1px solid var(--border-color);
+            padding: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .cart-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .cart-total-badge {
+            background: transparent;
+            border: 1px solid var(--accent-orange);
+            color: var(--accent-orange);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .cart-list {
+            max-height: 70px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            color: #d0d0d0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-clear {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            flex: 1;
+            font-weight: bold;
+        }
+
+        .btn-print {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            flex: 2;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>🍔 Os Heróis</h1>
-    <p style="text-align: center; margin-top: 0; color: #6c757d;">Sistema de Pedidos</p>
+    <header>
+        <!-- Logo puxando do arquivo logo.jpeg -->
+        <img src="logo.jpeg" alt="Os Heróis" class="logo" onerror="this.src='https://via.placeholder.com/150/000000/d95d39?text=OS+HEROIS'">
+    </header>
 
-    <!-- SESSÃO DE LANCHES -->
-    <h2>Lanches</h2>
-    <div class="card">
-        <div class="item">
+    <div class="menu-container">
+        
+        <div class="section-title">✨ Nossos Lanches Heróicos</div>
+
+        <!-- Lanche 1 -->
+        <div class="item-card">
+            <div class="item-icon">🍔</div>
             <div class="item-info">
-                <span class="item-nome">1º D.F Burguer</span>
-                <span class="item-preco">R$ 28,00</span>
+                <div class="item-name">D.F BURGUER</div>
+                <div class="item-price">R$ 28,00</div>
             </div>
-            <div class="item-controls">
-                <input type="number" id="qtd-l1" value="1" min="1">
-                <button class="add-btn" onclick="adicionarItem('1º D.F Burguer', 28.00, 'qtd-l1')">➕</button>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-l1', -1)">-</button>
+                    <input type="text" id="qtd-l1" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-l1', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('D.F BURGUER', 28.00, 'qtd-l1')">Adicionar</button>
             </div>
         </div>
-        <div class="item">
+
+        <!-- Lanche 2 -->
+        <div class="item-card">
+            <div class="item-icon">🔱</div>
             <div class="item-info">
-                <span class="item-nome">2º D.F Salad Muler Maravilha</span>
-                <span class="item-preco">R$ 32,00</span>
+                <div class="item-name">D.F Salad Mulher Maravilha</div>
+                <div class="item-price">R$ 32,00</div>
             </div>
-            <div class="item-controls">
-                <input type="number" id="qtd-l2" value="1" min="1">
-                <button class="add-btn" onclick="adicionarItem('2º D.F Salad Muler Maravilha', 32.00, 'qtd-l2')">➕</button>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-l2', -1)">-</button>
+                    <input type="text" id="qtd-l2" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-l2', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('D.F Salad M. Maravilha', 32.00, 'qtd-l2')">Adicionar</button>
             </div>
         </div>
-        <div class="item">
+
+        <!-- Lanche 3 -->
+        <div class="item-card">
+            <div class="item-icon">⚡</div>
             <div class="item-info">
-                <span class="item-nome">3º D.F Bacon Thor</span>
-                <span class="item-preco">R$ 37,00</span>
+                <div class="item-name">D.F Bacon Thor</div>
+                <div class="item-price">R$ 37,00</div>
             </div>
-            <div class="item-controls">
-                <input type="number" id="qtd-l3" value="1" min="1">
-                <button class="add-btn" onclick="adicionarItem('3º D.F Bacon Thor', 37.00, 'qtd-l3')">➕</button>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-l3', -1)">-</button>
+                    <input type="text" id="qtd-l3" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-l3', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('D.F Bacon Thor', 37.00, 'qtd-l3')">Adicionar</button>
             </div>
         </div>
-        <div class="item">
+
+        <!-- Lanche 4 -->
+        <div class="item-card">
+            <div class="item-icon">🕷️</div>
             <div class="item-info">
-                <span class="item-nome">4º D.F Catupiry Homem Aranha</span>
-                <span class="item-preco">R$ 39,00</span>
+                <div class="item-name">D.F Catupiry Homem-aranha</div>
+                <div class="item-price">R$ 39,00</div>
             </div>
-            <div class="item-controls">
-                <input type="number" id="qtd-l4" value="1" min="1">
-                <button class="add-btn" onclick="adicionarItem('4º D.F Catupiry Homem Aranha', 39.00, 'qtd-l4')">➕</button>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-l4', -1)">-</button>
+                    <input type="text" id="qtd-l4" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-l4', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('D.F Catu. Homem-aranha', 39.00, 'qtd-l4')">Adicionar</button>
             </div>
         </div>
-        <div class="item">
+
+        <!-- Lanche 5 -->
+        <div class="item-card">
+            <div class="item-icon">🦸🏻‍♂️</div>
             <div class="item-info">
-                <span class="item-nome">5º O Todo Poderoso</span>
-                <span class="item-preco">R$ 42,00</span>
+                <div class="item-name">Todo Poderoso</div>
+                <div class="item-price">R$ 42,00</div>
             </div>
-            <div class="item-controls">
-                <input type="number" id="qtd-l5" value="1" min="1">
-                <button class="add-btn" onclick="adicionarItem('5º O Todo Poderoso', 42.00, 'qtd-l5')">➕</button>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-l5', -1)">-</button>
+                    <input type="text" id="qtd-l5" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-l5', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('Todo Poderoso', 42.00, 'qtd-l5')">Adicionar</button>
+            </div>
+        </div>
+
+        <div class="section-title">🥤 Bebidas</div>
+
+        <!-- Bebidas -->
+        <div class="item-card">
+            <div class="item-icon">💧</div>
+            <div class="item-info">
+                <div class="item-name">Água</div>
+                <div class="item-price">R$ 5,00</div>
+            </div>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-b1', -1)">-</button>
+                    <input type="text" id="qtd-b1" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-b1', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('Agua', 5.00, 'qtd-b1')">Adicionar</button>
+            </div>
+        </div>
+
+        <div class="item-card">
+            <div class="item-icon">💦</div>
+            <div class="item-info">
+                <div class="item-name">Água com gás</div>
+                <div class="item-price">R$ 6,00</div>
+            </div>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-b2', -1)">-</button>
+                    <input type="text" id="qtd-b2" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-b2', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('Agua com gas', 6.00, 'qtd-b2')">Adicionar</button>
+            </div>
+        </div>
+
+        <div class="item-card">
+            <div class="item-icon">🥤</div>
+            <div class="item-info">
+                <div class="item-name">Refrigerante lata</div>
+                <div class="item-price">R$ 8,00</div>
+            </div>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-b3', -1)">-</button>
+                    <input type="text" id="qtd-b3" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-b3', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('Refri Lata', 8.00, 'qtd-b3')">Adicionar</button>
+            </div>
+        </div>
+
+        <div class="item-card">
+            <div class="item-icon">🧃</div>
+            <div class="item-info">
+                <div class="item-name">Suco Del Valle</div>
+                <div class="item-price">R$ 9,00</div>
+            </div>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-b4', -1)">-</button>
+                    <input type="text" id="qtd-b4" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-b4', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('Suco Del Valle', 9.00, 'qtd-b4')">Adicionar</button>
+            </div>
+        </div>
+
+        <div class="item-card">
+            <div class="item-icon">🍋</div>
+            <div class="item-info">
+                <div class="item-name">H2O</div>
+                <div class="item-price">R$ 9,00</div>
+            </div>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-b5', -1)">-</button>
+                    <input type="text" id="qtd-b5" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-b5', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('H2O', 9.00, 'qtd-b5')">Adicionar</button>
             </div>
         </div>
     </div>
 
-    <!-- SESSÃO DE BEBIDAS -->
-    <h2>🥤 Bebidas</h2>
-    <div class="card">
-        <div class="item">
-            <div class="item-info">
-                <span class="item-nome">💧 Água</span>
-                <span class="item-preco">R$ 5,00</span>
-            </div>
-            <div class="item-controls">
-                <input type="number" id="qtd-b1" value="1" min="1">
-                <button class="add-btn" onclick="adicionarItem('Água', 5.00, 'qtd-b1')">➕</button>
-            </div>
+    <!-- Rodapé Fixo com Resumo do Pedido -->
+    <footer class="cart-footer">
+        <div class="cart-header">
+            <span class="cart-title">PEDIDO ATUAL</span>
+            <div class="cart-total-badge">TOTAL: R$ <span id="valor-total">0,00</span></div>
         </div>
-        <div class="item">
-            <div class="item-info">
-                <span class="item-nome">💦 Água com gás</span>
-                <span class="item-preco">R$ 6,00</span>
-            </div>
-            <div class="item-controls">
-                <input type="number" id="qtd-b2" value="1" min="1">
-                <button class="add-btn" onclick="adicionarItem('Água com gás', 6.00, 'qtd-b2')">➕</button>
-            </div>
+        
+        <div class="cart-list" id="lista-pedido">
+            <!-- Itens adicionados aparecerão aqui -->
+            <div style="color: #666; font-style: italic;">Nenhum item adicionado...</div>
         </div>
-        <div class="item">
-            <div class="item-info">
-                <span class="item-nome">🥤 Refrigerante lata</span>
-                <span class="item-preco">R$ 8,00</span>
-            </div>
-            <div class="item-controls">
-                <input type="number" id="qtd-b3" value="1" min="1">
-                <button class="add-btn" onclick="adicionarItem('Refrigerante lata', 8.00, 'qtd-b3')">➕</button>
-            </div>
-        </div>
-        <div class="item">
-            <div class="item-info">
-                <span class="item-nome">🧃 Suco Del Valle</span>
-                <span class="item-preco">R$ 9,00</span>
-            </div>
-            <div class="item-controls">
-                <input type="number" id="qtd-b4" value="1" min="1">
-                <button class="add-btn" onclick="adicionarItem('Suco Del Valle', 9.00, 'qtd-b4')">➕</button>
-            </div>
-        </div>
-        <div class="item">
-            <div class="item-info">
-                <span class="item-nome">🍋 H2O</span>
-                <span class="item-preco">R$ 9,00</span>
-            </div>
-            <div class="item-controls">
-                <input type="number" id="qtd-b5" value="1" min="1">
-                <button class="add-btn" onclick="adicionarItem('H2O', 9.00, 'qtd-b5')">➕</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- RESUMO DO PEDIDO -->
-    <div class="resumo">
-        <h3>🛒 Resumo do Pedido</h3>
-        <ul id="lista-pedido"></ul>
-        <div class="total-box">TOTAL: R$ <span id="valor-total">0.00</span></div>
-    </div>
-
-    <div class="botoes-acao">
-        <button class="clear-btn" onclick="limparPedido()">🗑️ Limpar</button>
-        <button class="print-btn" onclick="imprimirRawBT()">🖨️ Imprimir</button>
-    </div>
+        <div class="action-buttons">
+            <button class="btn-clear" onclick="limparPedido()">Limpar</button>
+            <button class="btn-print" onclick="imprimirRawBT()">🖨️ IMPRIMIR</button>
+        </div>
+    </footer>
 
     <script>
         let total = 0;
         let cabecalhoRecibo = "[C]================================\n[C]OS HEROIS\n[C]================================\n\n[L]Qtd Item[R]Valor\n[L]--------------------------------\n";
         let itensRecibo = "";
+        let temItens = false;
+
+        // Função para os botões de + e -
+        function alterarQtd(idInput, valor) {
+            let input = document.getElementById(idInput);
+            let qtdAtual = parseInt(input.value);
+            let novaQtd = qtdAtual + valor;
+            
+            if (novaQtd >= 1) {
+                input.value = novaQtd;
+            }
+        }
 
         function adicionarItem(nome, preco, idInput) {
             let qtdInput = document.getElementById(idInput);
             let qtd = parseInt(qtdInput.value);
-            
-            if (qtd < 1 || isNaN(qtd)) return;
-
             let subtotal = qtd * preco;
             
-            // Atualiza visualmente na tela
-            document.getElementById('lista-pedido').innerHTML += `<li><span>${qtd}x ${nome}</span> <span>R$ ${subtotal.toFixed(2)}</span></li>`;
+            // Remove a mensagem de "nenhum item" se for o primeiro
+            if (!temItens) {
+                document.getElementById('lista-pedido').innerHTML = "";
+                temItens = true;
+            }
+
+            // Atualiza visualmente na tela (Carrinho)
+            let itemHTML = `
+                <div class="cart-item">
+                    <span>${qtd}x ${nome}</span>
+                    <span>R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
+                </div>
+            `;
+            document.getElementById('lista-pedido').insertAdjacentHTML('beforeend', itemHTML);
             
             // Atualiza o total
             total += subtotal;
-            document.getElementById('valor-total').innerText = total.toFixed(2);
+            document.getElementById('valor-total').innerText = total.toFixed(2).replace('.', ',');
             
-            // Adiciona ao texto que será impresso (formatado com tags suportadas pelo RawBT)
+            // Adiciona ao texto que será impresso (RawBT formatação)
+            // Removi acentos para evitar erros na impressora térmica
             itensRecibo += `[L]${qtd}x ${nome}[R]R$ ${subtotal.toFixed(2)}\n`;
 
-            // Reseta a quantidade para 1 após adicionar
+            // Reseta a quantidade para 1 após adicionar e dá um feedback visual rápido
             qtdInput.value = 1;
+            
+            // Faz a lista rolar para o último item adicionado
+            let lista = document.getElementById('lista-pedido');
+            lista.scrollTop = lista.scrollHeight;
         }
 
         function limparPedido() {
             total = 0;
             itensRecibo = "";
-            document.getElementById('lista-pedido').innerHTML = "";
-            document.getElementById('valor-total').innerText = "0.00";
+            temItens = false;
+            document.getElementById('lista-pedido').innerHTML = '<div style="color: #666; font-style: italic;">Nenhum item adicionado...</div>';
+            document.getElementById('valor-total').innerText = "0,00";
         }
 
         function imprimirRawBT() {
@@ -200,7 +497,7 @@
             // Finaliza o texto do recibo
             let reciboFinal = cabecalhoRecibo + itensRecibo + `[L]--------------------------------\n[R]TOTAL: R$ ${total.toFixed(2)}\n\n[C]Obrigado pela preferencia!\n[C]Volte Sempre!\n\n\n`;
             
-            // Cria o link de comunicação com o RawBT (Intent do Android)
+            // Cria o link de comunicação com o RawBT
             let rawbtIntent = "intent:" + encodeURIComponent(reciboFinal) + "#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;";
             
             // Abre o aplicativo RawBT
