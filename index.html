@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Os Heróis - App de Pedidos</title>
     <link rel="icon" type="image/jpeg" href="logo.jpeg">
@@ -41,6 +41,61 @@
             object-fit: cover;
             border: 3px solid var(--accent-orange);
             box-shadow: 0 0 15px rgba(217, 93, 57, 0.4);
+        }
+
+        /* Botão do Cardápio */
+        .btn-cardapio {
+            background-color: transparent;
+            color: var(--accent-orange);
+            border: 1px solid var(--accent-orange);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        
+        .btn-cardapio:active {
+            background-color: rgba(217, 93, 57, 0.2);
+        }
+
+        /* Modal do Cardápio (Tela Cheia) */
+        .modal {
+            display: none; /* Escondido por padrão */
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .modal-content {
+            max-width: 95%;
+            max-height: 80vh;
+            border: 2px solid var(--accent-orange);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(217, 93, 57, 0.3);
+            object-fit: contain;
+        }
+
+        .close-modal {
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            align-self: flex-end;
+            margin-right: 20px;
+            margin-bottom: 10px;
+            cursor: pointer;
         }
 
         .section-title {
@@ -237,7 +292,16 @@
     <header>
         <!-- Logo puxando do arquivo logo.jpeg -->
         <img src="logo.jpeg" alt="Os Heróis" class="logo" onerror="this.src='https://via.placeholder.com/150/000000/d95d39?text=OS+HEROIS'">
+        <br>
+        <!-- Novo botão de Cardápio -->
+        <button class="btn-cardapio" onclick="abrirCardapio()">📖 VER CARDÁPIO ILUSTRADO</button>
     </header>
+
+    <!-- Modal (Pop-up) da Imagem do Cardápio -->
+    <div id="modalCardapio" class="modal">
+        <span class="close-modal" onclick="fecharCardapio()">&times;</span>
+        <img src="cardapio.jpeg" class="modal-content" alt="Cardápio Ilustrado">
+    </div>
 
     <div class="menu-container">
         
@@ -435,6 +499,15 @@
         let cabecalhoRecibo = "[C]================================\n[C]OS HEROIS\n[C]================================\n\n[L]Qtd Item[R]Valor\n[L]--------------------------------\n";
         let itensRecibo = "";
         let temItens = false;
+
+        // Funções para abrir e fechar a imagem do cardápio
+        function abrirCardapio() {
+            document.getElementById('modalCardapio').style.display = 'flex';
+        }
+
+        function fecharCardapio() {
+            document.getElementById('modalCardapio').style.display = 'none';
+        }
 
         // Função para os botões de + e -
         function alterarQtd(idInput, valor) {
