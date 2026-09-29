@@ -507,6 +507,26 @@
                 <button class="add-btn" onclick="adicionarItem('H2O', 9.00, 'qtd-b5')">Adicionar</button>
             </div>
         </div>
+        
+        <!-- NOVA SESSÃO: ADICIONAIS -->
+        <div class="section-title">🥩 ADICIONAIS</div>
+
+        <div class="item-card">
+            <div class="item-icon">🥩</div>
+            <div class="item-info">
+                <div class="item-name">ADICIONAL DE CARNE</div>
+                <div class="item-price">R$ 8,00</div>
+            </div>
+            <div class="item-actions">
+                <div class="qty-controls">
+                    <button class="qty-btn" onclick="alterarQtd('qtd-a1', -1)">-</button>
+                    <input type="text" id="qtd-a1" class="qty-input" value="1" readonly>
+                    <button class="qty-btn" onclick="alterarQtd('qtd-a1', 1)">+</button>
+                </div>
+                <button class="add-btn" onclick="adicionarItem('Adic. de Carne', 8.00, 'qtd-a1')">Adicionar</button>
+            </div>
+        </div>
+
     </div>
 
     <!-- Rodapé Fixo com Resumo do Pedido -->
