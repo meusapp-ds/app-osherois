@@ -24,7 +24,7 @@
             padding: 0; 
             background-color: var(--bg-color); 
             color: var(--text-main);
-            padding-bottom: 250px; /* Espaço para o rodapé fixo maior */
+            padding-bottom: 250px;
         }
 
         /* Cabeçalho */
@@ -64,9 +64,9 @@
             background-color: rgba(217, 93, 57, 0.2);
         }
 
-        /* Modal do Cardápio (Tela Cheia) */
+        /* Modal do Cardápio */
         .modal {
-            display: none; /* Escondido por padrão */
+            display: none;
             position: fixed;
             z-index: 2000;
             left: 0;
@@ -223,7 +223,7 @@
             color: white;
             font-weight: bold;
             font-size: 14px;
-            pointer-events: none; /* Impede digitar manualmente */
+            pointer-events: none;
         }
 
         .add-btn {
@@ -327,14 +327,11 @@
 <body>
 
     <header>
-        <!-- Logo puxando do arquivo logo.jpeg -->
         <img src="logo.jpeg" alt="Os Heróis" class="logo" onerror="this.src='https://via.placeholder.com/150/000000/d95d39?text=OS+HEROIS'">
         <br>
-        <!-- Novo botão de Cardápio -->
         <button class="btn-cardapio" onclick="abrirCardapio()">📖 VER CARDÁPIO ILUSTRADO</button>
     </header>
 
-    <!-- Modal (Pop-up) da Imagem do Cardápio -->
     <div id="modalCardapio" class="modal">
         <span class="close-modal" onclick="fecharCardapio()">&times;</span>
         <img src="cardapio.jpeg" class="modal-content" alt="Cardápio Ilustrado">
@@ -342,7 +339,6 @@
 
     <div class="menu-container">
         
-        <!-- Aba / Campo para o Nome do Cliente no Início -->
         <div class="client-box">
             <label class="client-label" for="nome-cliente">👤 Nome do Cliente:</label>
             <input type="text" id="nome-cliente" class="client-input" placeholder="Digite o nome do cliente...">
@@ -350,7 +346,6 @@
 
         <div class="section-title">✨ Nossos Lanches Heróicos</div>
 
-        <!-- Lanche 1 -->
         <div class="item-card">
             <div class="item-icon">🍔</div>
             <div class="item-info">
@@ -367,7 +362,6 @@
             </div>
         </div>
 
-        <!-- Lanche 2 -->
         <div class="item-card">
             <div class="item-icon">🔱</div>
             <div class="item-info">
@@ -384,7 +378,6 @@
             </div>
         </div>
 
-        <!-- Lanche 3 -->
         <div class="item-card">
             <div class="item-icon">⚡</div>
             <div class="item-info">
@@ -401,7 +394,6 @@
             </div>
         </div>
 
-        <!-- Lanche 4 -->
         <div class="item-card">
             <div class="item-icon">🕷️</div>
             <div class="item-info">
@@ -418,7 +410,6 @@
             </div>
         </div>
 
-        <!-- Lanche 5 -->
         <div class="item-card">
             <div class="item-icon">🦸🏻‍♂️</div>
             <div class="item-info">
@@ -437,7 +428,6 @@
 
         <div class="section-title">🥤 BEBIDAS</div>
 
-        <!-- Bebidas -->
         <div class="item-card">
             <div class="item-icon">💧</div>
             <div class="item-info">
@@ -527,7 +517,6 @@
         </div>
         
         <div class="cart-list" id="lista-pedido">
-            <!-- Itens adicionados aparecerão aqui -->
             <div style="color: #666; font-style: italic;">Nenhum item adicionado...</div>
         </div>
 
@@ -543,7 +532,15 @@
         let itensRecibo = "";
         let temItens = false;
 
-        // Funções para abrir e fechar a imagem do cardápio
+        // FUNÇÃO NOVA: Remove emojis, símbolos ocultos e acentos para a impressora.
+        function limparTextoParaImpressora(texto) {
+            return texto
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "") // Tira os acentos
+                .replace(/[^\x20-\x7E]/g, "")    // Remove Emojis e caracteres estranhos
+                .trim();
+        }
+
         function abrirCardapio() {
             document.getElementById('modalCardapio').style.display = 'flex';
         }
@@ -552,7 +549,6 @@
             document.getElementById('modalCardapio').style.display = 'none';
         }
 
-        // Função para os botões de + e -
         function alterarQtd(idInput, valor) {
             let input = document.getElementById(idInput);
             let qtdAtual = parseInt(input.value);
@@ -568,13 +564,12 @@
             let qtd = parseInt(qtdInput.value);
             let subtotal = qtd * preco;
             
-            // Remove a mensagem de "nenhum item" se for o primeiro
             if (!temItens) {
                 document.getElementById('lista-pedido').innerHTML = "";
                 temItens = true;
             }
 
-            // Atualiza visualmente na tela (Carrinho)
+            // Exibição na tela (pode manter acentos/emojis normais aqui)
             let itemHTML = `
                 <div class="cart-item">
                     <span>${qtd}x ${nome}</span>
@@ -583,17 +578,15 @@
             `;
             document.getElementById('lista-pedido').insertAdjacentHTML('beforeend', itemHTML);
             
-            // Atualiza o total
             total += subtotal;
             document.getElementById('valor-total').innerText = total.toFixed(2).replace('.', ',');
             
-            // Adiciona ao texto que será impresso (RawBT formatação)
-            itensRecibo += `[L]${qtd}x ${nome}[R]R$ ${subtotal.toFixed(2)}\n`;
+            // Aqui aplicamos a limpeza do nome antes de mandar para a impressão
+            let nomeLimpo = limparTextoParaImpressora(nome);
+            itensRecibo += `[L]${qtd}x ${nomeLimpo}[R]R$ ${subtotal.toFixed(2)}\n`;
 
-            // Reseta a quantidade para 1 após adicionar e dá um feedback visual rápido
             qtdInput.value = 1;
             
-            // Faz a lista rolar para o último item adicionado
             let lista = document.getElementById('lista-pedido');
             lista.scrollTop = lista.scrollHeight;
         }
@@ -613,26 +606,22 @@
                 return;
             }
             
-            let nomeCliente = document.getElementById('nome-cliente').value.trim();
-            if (nomeCliente === "") {
+            let nomeCliente = document.getElementById('nome-cliente').value;
+            if (nomeCliente.trim() === "") {
                 alert("Por favor, digite o nome do cliente no início do pedido!");
                 document.getElementById('nome-cliente').focus();
                 return;
             }
 
-            // Remove acentos do nome do cliente para evitar erros na impressora térmica
-            let nomeClienteSemAcento = nomeCliente.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            // Limpa o nome do cliente removendo emojis e acentos
+            let nomeClienteLimpo = limparTextoParaImpressora(nomeCliente);
 
-            // Monta o bloco do cliente para o recibo
-            let infoClienteRecibo = `[L]CLIENTE: ${nomeClienteSemAcento}\n[L]--------------------------------\n[L]Qtd Item[R]Valor\n[L]--------------------------------\n`;
+            let infoClienteRecibo = `[L]CLIENTE: ${nomeClienteLimpo}\n[L]--------------------------------\n[L]Qtd Item[R]Valor\n[L]--------------------------------\n`;
 
-            // Finaliza o texto do recibo
             let reciboFinal = cabecalhoRecibo + infoClienteRecibo + itensRecibo + `[L]--------------------------------\n[R]TOTAL: R$ ${total.toFixed(2)}\n\n[C]Obrigado pela preferencia!\n[C]Volte Sempre!\n\n\n`;
             
-            // Cria o link de comunicação com o RawBT
             let rawbtIntent = "intent:" + encodeURIComponent(reciboFinal) + "#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;";
             
-            // Abre o aplicativo RawBT
             window.location.href = rawbtIntent;
         }
     </script>
